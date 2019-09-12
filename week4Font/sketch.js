@@ -1,4 +1,5 @@
 var Monoton;
+var x = 0;
 
 function setup() {
   // put setup code here
@@ -11,5 +12,9 @@ function draw() {
   background(100);
   textFont(Monoton, 120);
   fill('blue');
-  text("Hello World", 20, 100);
+  text("Hello World", x, 100);
+  x+=5;
+  if (x > width) {
+    x = 0;
+  }
 }
