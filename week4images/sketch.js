@@ -2,7 +2,7 @@ var catPic;
 
 function setup() {
   // put setup code here
-  createCanvas(720, 400);
+  createCanvas(800, 800);
   catPic = loadImage("assets/Cat.jpg");
 }
 
