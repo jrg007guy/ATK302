@@ -1,10 +1,14 @@
 var cars = [];
 var frogPos;
 var myState = 0;
-var timer = 0;
+var timer = 600;
 var maxCars = 5;
 var yodaLeft, yodaRight, yoda;
 var birds = [];
+var x = 0;
+var y = 700;
+var jumpState = 0;
+var jumpTimer = 0;
 
 function setup() {
 
@@ -26,6 +30,8 @@ function setup() {
   rectMode(CENTER);
   ellipseMode(CENTER);
   loadImage(CENTER);
+
+
 }
 
 
@@ -35,16 +41,15 @@ function draw() {
   switch (myState) {
     case 0:
       background(100);
-      fill('white');
-      textSize(100);
-      text("Click to Start!", 100, 100);
+      splashText();
+      jump();
       break;
     case 1:
       game();
-      timer++;
-      if (timer > 600) {
+      timer--;
+      if (timer < 1) {
         myState = 3;
-        timer = 0;
+        timer = 600;
       }
       break;
     case 2:
@@ -90,7 +95,7 @@ function Car() {
 
     this.timer++;
     if (this.timer > 20) {
-      this.birdNum = this.birdNum +1;
+      this.birdNum = this.birdNum + 1;
       this.timer = 0;
     }
 
@@ -144,7 +149,7 @@ function checkForKeys() {
 function resetTheGame() {
   cars = [];
 
-  timer = 0;
+  timer = 600;
   for (var i = 0; i < maxCars; i++) {
     cars.push(new Car(i));
   }
@@ -153,6 +158,9 @@ function resetTheGame() {
 
 function game() {
   background('teal');
+  fill('white');
+  textSize(100);
+  text(timer, 300, 100);
   for (var i = 0; i < cars.length; i++) {
     cars[i].display();
     cars[i].drive();
@@ -173,4 +181,37 @@ function game() {
 
   checkForKeys();
 
+}
+
+function splashText() {
+  fill('white');
+  rect(x + 100, y -100, 450, 100);
+  fill('black');
+  textSize(50);
+  text("Click To Start", x, y -100);
+}
+
+function jump() {
+  switch (jumpState) {
+    case 0:
+      y++;
+      jumpTimer++;
+      if (jumpTimer >= 150) {
+        jumpState++;
+        jumpTimer = 0;
+      }
+      break;
+    case 1:
+      y--;
+      jumpTimer++;
+      if (jumpTimer >= 150) {
+        jumpState++;
+        jumpTimer = 0;
+      }
+      break;
+    case 2:
+      jumpTimer = 0;
+      jumpState = 0;
+      break;
+  }
 }
