@@ -49,7 +49,7 @@ function setup() {
 
 function vidLoad() {
     vid.loop();
-    vid.volume(.5);
+    vid.volume(1);
 
 }
 
