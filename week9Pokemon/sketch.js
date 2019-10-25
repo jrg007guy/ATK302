@@ -20,20 +20,20 @@ function setup() {
   Monoton = loadFont("Assets/Monoton.ttf");
 
   vid = createVideo(
-    ['assets/PokemonSong.mp4'], vidLoad);
+    ['Assets/PokemonSong.mp4'], vidLoad);
   vid.size(800, 800);
   // song1 = loadSound('assets/pokemon.mp3');
-  pokeBallLeft = loadImage("assets/PokeBallLeft.png");
-  pokeBallRight = loadImage("assets/PokeBallRight.png");
+  pokeBallLeft = loadImage("Assets/PokeBallLeft.png");
+  pokeBallRight = loadImage("Assets/PokeBallRight.png");
   pokeBall = pokeBallLeft;
 
-  pikas[0] = loadImage("assets/Pika1.gif");
-  pikas[1] = loadImage("assets/Pika2.gif");
-  pikas[2] = loadImage("assets/Pika3.gif");
-  pikas[3] = loadImage("assets/Pika4.gif");
+  pikas[0] = loadImage("Assets/Pika1.gif");
+  pikas[1] = loadImage("Assets/Pika2.gif");
+  pikas[2] = loadImage("Assets/Pika3.gif");
+  pikas[3] = loadImage("Assets/Pika4.gif");
 
-  pikachuWin = loadImage("assets/PikachuWin.png");
-  pikachuLose = loadImage("assets/PikachuLose.png");
+  pikachuWin = loadImage("Assets/PikachuWin.png");
+  pikachuLose = loadImage("Assets/PikachuLose.png");
 
   //spawn cars
   for (var i = 0; i < 5; i++) {
