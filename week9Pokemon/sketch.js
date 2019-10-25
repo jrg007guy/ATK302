@@ -17,7 +17,7 @@ var Monoton;
 function setup() {
 
   createCanvas(800, 800);
-  Monoton = loadFont("assets/Monoton.ttf");
+  Monoton = loadFont("Assets/Monoton.ttf");
 
   vid = createVideo(
     ['assets/PokemonSong.mp4'], vidLoad);
