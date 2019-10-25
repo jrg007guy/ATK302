@@ -49,7 +49,7 @@ function setup() {
 
 function vidLoad() {
     vid.loop();
-    vid.volume(1);
+    vid.volume(.5);
 
 }
 
@@ -63,6 +63,7 @@ function draw() {
       break;
     case 1:
       game();
+      vid.hide();
       timer--;
       if (timer < 1) {
         myState = 3;
