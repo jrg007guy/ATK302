@@ -19,7 +19,7 @@ function preload() {
   img = loadImage('assets/Club.png');
   img1 = loadImage('assets/Cup.png');
   img2 = loadImage('assets/Couch.png');
-  img3 = loadImage('assets/Island.png');
+  img3 = loadImage('assets/Island.PNG');
   img4 = loadImage('assets/Winter.gif');
   img5 = loadImage('assets/City.png');
 }
