@@ -218,7 +218,7 @@ function game() {
 
   rotate(radians(alpha)); // using alpha in here so it doesn't feel bad
 
-  image(pokeBall, 0, 0, 500, 500);
+  image(pokeBall, 0, 0, 90, 90);
   //  	rect(0, 0, 100, 100) ;
   pop();
 
