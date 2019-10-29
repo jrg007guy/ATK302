@@ -219,8 +219,8 @@ function game() {
   frogPos.x = xPosition;
   frogPos.y = yPosition;
 
-  checkForKeys();
-  
+  //checkForKeys();
+
   for (var i = 0; i < cars.length; i++) {
     cars[i].display();
     cars[i].drive();
