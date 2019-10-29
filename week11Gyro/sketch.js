@@ -193,13 +193,7 @@ function game() {
   fill('white');
   textSize(100);
   text(timer, 300, 100);
-  for (var i = 0; i < cars.length; i++) {
-    cars[i].display();
-    cars[i].drive();
-    if (cars[i].pos.dist(frogPos) < 50) {
-      cars.splice(i, 1);
-    }
-  }
+
 
   if (cars.length == 0) {
     myState = 2;
@@ -226,6 +220,14 @@ function game() {
   frogPos.y = yPosition;
 
   checkForKeys();
+  
+  for (var i = 0; i < cars.length; i++) {
+    cars[i].display();
+    cars[i].drive();
+    if (cars[i].pos.dist(frogPos) < 50) {
+      cars.splice(i, 1);
+    }
+  }
 
 }
 
