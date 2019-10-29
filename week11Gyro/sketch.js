@@ -176,6 +176,8 @@ function checkForKeys() {
   if (keyIsDown(UP_ARROW)) frogPos.y = frogPos.y - 5;
   if (keyIsDown(DOWN_ARROW)) frogPos.y = frogPos.y + 5;
 
+  frogPos.x = xPosition;
+  frogPos.y = yPosition;
 }
 
 function resetTheGame() {
@@ -196,7 +198,7 @@ function game() {
   for (var i = 0; i < cars.length; i++) {
     cars[i].display();
     cars[i].drive();
-    if (cars[i].pos.dist(frogPos) < 100) {
+    if (cars[i].pos.dist(frogPos) < 50) {
       cars.splice(i, 1);
     }
   }
