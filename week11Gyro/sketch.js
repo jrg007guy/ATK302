@@ -176,8 +176,6 @@ function checkForKeys() {
   if (keyIsDown(UP_ARROW)) frogPos.y = frogPos.y - 5;
   if (keyIsDown(DOWN_ARROW)) frogPos.y = frogPos.y + 5;
 
-  frogPos.x = xPosition;
-  frogPos.y = yPosition;
 }
 
 function resetTheGame() {
@@ -223,6 +221,9 @@ function game() {
   image(pokeBall, 0, 0, 90, 90);
   //  	rect(0, 0, 100, 100) ;
   pop();
+
+  frogPos.x = xPosition;
+  frogPos.y = yPosition;
 
   checkForKeys();
 
