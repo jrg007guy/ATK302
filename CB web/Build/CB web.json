@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "House on The Hill",
+"productVersion": "1.0",
+"dataUrl": "CB web.data.unityweb",
+"wasmCodeUrl": "CB web.wasm.code.unityweb",
+"wasmFrameworkUrl": "CB web.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.2.4f1"
+}
