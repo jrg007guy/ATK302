@@ -1,7 +1,7 @@
 var namesArray = [];
 
 function setup() {
-
+  
   // Tabletop stuff, for getting google spreadsheet data in.
   let url = '1GtE3eoYVWBv9zMPoyettXzDCEv6qdNGKio_hgEh5duM'; // this is KEY of the URL from the sheet
   let settings = {
@@ -48,7 +48,7 @@ function draw() {
 
 // my circle class
 function Circle(myName, myShape) {
-  this.pos = createVector(100,100);
+  this.pos = createVector(Random(WindowHeight),Random(WindowWidth);
   this.name = myName;
   this.shape = myShape;
 
