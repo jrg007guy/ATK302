@@ -1,5 +1,3 @@
-
-
 //Overlap Point and pixel
 //the collisions are not checked against bounding boxes but between
 //points or image pixels
@@ -11,8 +9,8 @@ var player;
 var pickUp;
 var platform;
 var jump = -10;
-var jumpState = 0;
-var jumpTimer = 0;
+var playerState = 0;
+var playerTimer = 0;
 var GRAVITY = .5;
 
 //virtual camera
@@ -30,17 +28,27 @@ var SCENE_H = 800;
 function setup() {
   createCanvas(800, 400);
 
-  player = createSprite(200,150, 100, 100);
-  var playerAnim = player.addAnimation('Running','assets/Pika1.gif','assets/Pika2.gif','assets/Pika3.gif','assets/Pika4.gif');
+  player = createSprite(200,100);
+  var playerAnimControl = player.addAnimation('Idle','assets/Player/Pika1.gif','assets/Player/Pika2.gif');
+  player.addAnimation('Walkinng','assets/Player/Pika1.gif','assets/Player/Pika2.gif','assets/Player/Pika3.gif',
+  'assets/Player/Pika4.gif');
+  player.addAnimation('Running','assets/Player/Pika1.gif','assets/Player/Pika2.gif','assets/Player/Pika3.gif',
+  'assets/Player/Pika4.gif');
+  player.addAnimation('Jumped','assets/Player/Pika3.gif');
+  player.addAnimation('PowerUpRunning','assets/Player/Pika3.gif');
+  player.addAnimation('PowerUpIdle','assets/Player/Pika3.gif');
   player.debug = true;
 
   //scale and offset sprite
   player.scale = 0.5;
-  playerAnim.offX = -50;
+  playerAnimControl.offX = -50;
 
   pickUp = createSprite(350, 215);
-  var pickUpAnim = pickUp.addAnimation('item','assets/pickUp0.gif','assets/pickUp1.gif','assets/pickUp2.gif','assets/pickUp3.gif','assets/pickUp4.gif', 'assets/pickUp5.gif','assets/pickUp6.gif','assets/pickUp7.gif','assets/pickUp8.gif','assets/pickUp9.gif','assets/pickUp10.gif');
-  pickUp.addAnimation('item_taken','assets/Pika1.gif','assets/Pika2.gif','assets/Pika3.gif','assets/Pika4.gif');
+  var pickUpAnim = pickUp.addAnimation('item','assets/PickUp/pickUp0.gif','assets/PickUp/pickUp1.gif','assets/PickUp/pickUp2.gif',
+  'assets/PickUp/pickUp3.gif','assets/PickUp/pickUp4.gif', 'assets/PickUp/pickUp5.gif','assets/PickUp/pickUp6.gif','assets/PickUp/pickUp7.gif',
+  'assets/PickUp/pickUp8.gif','assets/PickUp/pickUp9.gif','assets/PickUp/pickUp10.gif');
+
+  pickUp.addAnimation('item_taken','assets/Player/Pika1.gif','assets/Player/Pika2.gif','assets/Player/Pika3.gif','assets/Player/Pika4.gif');
   pickUp.setCollider('circle', 0, 0, 100);
   pickUp.debug = true;
 
@@ -56,15 +64,15 @@ function draw() {
   background(255, 255, 255);
 
 
-  jumpFunc();
+  playerAnimState();
 
   //a camera is created automatically at the beginning
 
   //.5 zoom is zooming out (50% of the normal size)
   if (mouseIsPressed)
-    camera.zoom = 0.5;
+    camera.zoom = 0.25;
   else
-    camera.zoom = 1;
+    camera.zoom = 0.5;
 
   //set the camera position to the ghost position
   camera.position.x = player.position.x;
@@ -74,7 +82,7 @@ function draw() {
   //jump command
   if(keyWentDown('space') || (keyWentDown(UP_ARROW))){
       player.velocity.y = jump;
-      jumpState = 1;
+      playerState = 1;
     }
 
   //if no arrow input set velocity to 0
@@ -82,6 +90,7 @@ function draw() {
 
   if (keyIsDown(LEFT_ARROW))
     player.velocity.x = -5;
+
   if (keyIsDown(RIGHT_ARROW))
     player.velocity.x = 5;
 
@@ -105,19 +114,21 @@ function draw() {
   drawSprites();
 }
 
-function jumpFunc() {
-  switch (jumpState) {
+function playerAnimState() {
+  switch (playerState) {
     case 0:
-    jumpTimer = 0;
+    playerTimer = 0;
     jump = -10;
+    player.changeAnimation('Running');
       break;
 
     case 1:
-    jumpTimer++;
+    playerTimer++;
     jump = 0;
-    if (jumpTimer >= 20) {
-      jumpState = 0;
-      jumpTimer = 0;
+    player.changeAnimation('Jumped');
+    if (playerTimer >= 40) {
+      playerState = 0;
+      playerTimer = 0;
     }
       break;
     }
