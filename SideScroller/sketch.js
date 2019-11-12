@@ -1,3 +1,5 @@
+
+
 //Overlap Point and pixel
 //the collisions are not checked against bounding boxes but between
 //points or image pixels
@@ -6,12 +8,12 @@
 //it's position is adjusted to another sprite's opaque pixels
 
 var player;
-var cloud;
+var pickUp;
 var platform;
-var jump = -7;
+var jump = -10;
 var jumpState = 0;
 var jumpTimer = 0;
-var GRAVITY = 1;
+var GRAVITY = .5;
 
 //virtual camera
 //move the mouse around
@@ -24,20 +26,27 @@ var frame;
 var SCENE_W = 1600;
 var SCENE_H = 800;
 
+
 function setup() {
   createCanvas(800, 400);
 
-  player = createSprite(300, 150);
-  player.addAnimation('normal', 'assets/player.png');
+  player = createSprite(200,150, 100, 100);
+  var playerAnim = player.addAnimation('Running','assets/Pika1.gif','assets/Pika2.gif','assets/Pika3.gif','assets/Pika4.gif');
   player.debug = true;
 
-  cloud = createSprite(500, 200);
-  cloud.addAnimation('normal', 'assets/cloud_breathing0001.png', 'assets/cloud_breathing0009.png');
-  cloud.addAnimation('transformed', 'assets/asterisk_normal0001.png', 'assets/asterisk_normal0003.png');
-  cloud.setCollider('circle', 0, 0, 50);
-  cloud.debug = true;
+  //scale and offset sprite
+  player.scale = 0.5;
+  playerAnim.offX = -50;
 
-  platform = createSprite(200, 400);
+  pickUp = createSprite(350, 215);
+  var pickUpAnim = pickUp.addAnimation('item','assets/pickUp0.gif','assets/pickUp1.gif','assets/pickUp2.gif','assets/pickUp3.gif','assets/pickUp4.gif', 'assets/pickUp5.gif','assets/pickUp6.gif','assets/pickUp7.gif','assets/pickUp8.gif','assets/pickUp9.gif','assets/pickUp10.gif');
+  pickUp.addAnimation('item_taken','assets/Pika1.gif','assets/Pika2.gif','assets/Pika3.gif','assets/Pika4.gif');
+  pickUp.setCollider('circle', 0, 0, 100);
+  pickUp.debug = true;
+
+  pickUp.scale = 0.3;
+
+  platform = createSprite(1600, 400);
   platform.addImage(loadImage('assets/level.png'));
 
   player.depth = 10;
@@ -45,6 +54,7 @@ function setup() {
 
 function draw() {
   background(255, 255, 255);
+
 
   jumpFunc();
 
@@ -77,8 +87,8 @@ function draw() {
 
   //instead of checking the colliders or bounding box overlaps
   //I can just check a point against a collider
-  if (cloud.overlapPoint(player.position.x, player.position.y))
-    cloud.changeAnimation('transformed');
+  if (pickUp.overlapPoint(player.position.x, player.position.y))
+    pickUp.changeAnimation('item_taken');
 
   //Or check a point against the pixels of a sprite animation or image
   //if the bottom of the player is not overlapping with the non transparent pixels
@@ -99,7 +109,7 @@ function jumpFunc() {
   switch (jumpState) {
     case 0:
     jumpTimer = 0;
-    jump = -7;
+    jump = -10;
       break;
 
     case 1:
