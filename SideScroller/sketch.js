@@ -1,10 +1,8 @@
 //Overlap Point and pixel
 //the collisions are not checked against bounding boxes but between
 //points or image pixels
-
 //left and right keys to move the sprite
 //it's position is adjusted to another sprite's opaque pixels
-
 var player;
 var pickUp;
 var platform;
@@ -12,45 +10,62 @@ var jump = -10;
 var playerState = 0;
 var playerTimer = 0;
 var GRAVITY = .5;
-
+var gameState = 0;
+var timer = 10;
+var splashPic;
+var backgroundPic;
+var losePic;
+var winPic;
+var resetTimer = 100;
 //virtual camera
 //move the mouse around
-//the sprite follows the mouse but appears at the center of the sketch
 //because the camera is following it
-
-var bg;
 var frame;
 //the scene is twice the size of the canvas
 var SCENE_W = 1600;
 var SCENE_H = 800;
 
-
 function setup() {
-  createCanvas(800, 400);
+  createCanvas(800, 800);
 
-  player = createSprite(200,100);
+  splashPic = loadImage("assets/SplashScreen.png");
+  backgroundPic = loadImage("assets/SnowbackgroundOriginal.png");
+  losePic = loadImage("assets/You_lose_screen.png");
+  winPic = loadImage("assets/You_win.png");
+
+
+
+  player = createSprite(200, 320);
   var playerAnimControl = player.addAnimation('Idle');
-  player.addAnimation('Running','assets/Player/Player1.png','assets/Player/Player2.png','assets/Player/Player3.png','assets/Player/Player4.png','assets/Player/Player5.png','assets/Player/Player6.png');
-  player.addAnimation('Jumped','assets/Player/Player3.png');
-  player.addAnimation('PowerUpRunning','assets/Player/Player3.png');
-  player.addAnimation('PowerUpIdle','assets/Player/Player3.png');
+  player.addAnimation('Running', 'assets/Player/Player1.png', 'assets/Player/Player2.png', 'assets/Player/Player3.png', 'assets/Player/Player4.png', 'assets/Player/Player5.png', 'assets/Player/Player6.png');
+  player.addAnimation('Jumped', 'assets/Player/Player3.png');
+  player.addAnimation('PowerUpRunning', 'assets/Player/Player3.png');
+  player.addAnimation('PowerUpIdle', 'assets/Player/Player3.png');
   player.debug = true;
 
   //scale and offset sprite
   player.scale = 0.2;
-  playerAnimControl.offX = 5000000;
-  playerAnimControl.offY = 5000000;
+  playerAnimControl.offX = 5;
+  playerAnimControl.offY = 5;
 
   pickUp = createSprite(350, 215);
-  var pickUpAnim = pickUp.addAnimation('item','assets/PickUp/pickUp0.gif','assets/PickUp/pickUp1.gif','assets/PickUp/pickUp2.gif',
-  'assets/PickUp/pickUp3.gif','assets/PickUp/pickUp4.gif', 'assets/PickUp/pickUp5.gif','assets/PickUp/pickUp6.gif','assets/PickUp/pickUp7.gif',
-  'assets/PickUp/pickUp8.gif','assets/PickUp/pickUp9.gif','assets/PickUp/pickUp10.gif');
+  var pickUpAnim = pickUp.addAnimation('item', 'assets/PickUp/pickUp0.gif', 'assets/PickUp/pickUp1.gif', 'assets/PickUp/pickUp2.gif',
+    'assets/PickUp/pickUp3.gif', 'assets/PickUp/pickUp4.gif', 'assets/PickUp/pickUp5.gif', 'assets/PickUp/pickUp6.gif', 'assets/PickUp/pickUp7.gif',
+    'assets/PickUp/pickUp8.gif', 'assets/PickUp/pickUp9.gif', 'assets/PickUp/pickUp10.gif');
 
-  pickUp.addAnimation('item_taken','assets/Player/Player1.png','assets/Player/Player2.png','assets/Player/Player3.png');
+  pickUp.addAnimation('item_taken', 'assets/Player/Player1.png', 'assets/Player/Player2.png', 'assets/Player/Player3.png');
   pickUp.setCollider('circle', 0, 0, 100);
   pickUp.debug = true;
 
   pickUp.scale = 0.3;
+
+  snowMan = createSprite(1050, 315);
+  var snowManAnim = snowMan.addAnimation('idle');
+
+  snowMan.setCollider('circle', 0, 0, 100);
+  snowMan.debug = true;
+
+  snowMan.scale = 0.5;
 
   platform = createSprite(1600, 400);
   platform.addImage(loadImage('assets/level.png'));
@@ -59,29 +74,74 @@ function setup() {
 }
 
 function draw() {
-  background(255, 255, 255);
+
+  switch (gameState) {
+    case 0:
+      splashScreen();
+
+      break;
+    case 1:
+      image(backgroundPic, -200, -150, 2000 * 1.5, 600 * 1.5);
+      game();
+      timer--;
+      if (timer < 1) {
+        timer = 600;
+        gameState = 2;
+      }
+      break;
+    case 2:
+    camera.off();
+    image(losePic,0, 0);
+    resetTimer--;
+    if (resetTimer < 1) {
+      background('black');
+      camera.on();
+      resetTimer = 10;
+      gameState = 0;
+    }
+      break;
+    case 3:
+
+      break;
+    case 4:
+      clear;
+      background('black');
+      timer--;
+      if (timer < 1) {
+        gameState = 1;
+        timer = 100;
+      }
+      break;
+  }
+}
+
+function splashScreen() {
+  camera.off();
+  image(splashPic, 0, 0);
+  if (mouseIsPressed) {
+    gameState = 4;
+  }
+}
 
 
-  playerAnimState();
+function game() {
+
+  playerAnimState()
 
   //a camera is created automatically at the beginning
-
   //.5 zoom is zooming out (50% of the normal size)
-  if (mouseIsPressed)
-    camera.zoom = 0.5;
-  else
-    camera.zoom = 1;
+  camera.zoom = 1;
 
   //set the camera position to the ghost position
+
   camera.position.x = player.position.x;
   camera.position.y = player.position.y;
 
-
   //jump command
-  if(keyWentDown('space') || (keyWentDown(UP_ARROW))){
-      player.velocity.y = jump;
-      playerState = 1;
-    }
+  if (keyWentDown('space') || (keyWentDown(UP_ARROW))) {
+    player.velocity.y = jump;
+    playerState = 1;
+  }
 
   //if no arrow input set velocity to 0
   player.velocity.x = 0;
@@ -108,26 +168,25 @@ function draw() {
   while (platform.overlapPixel(player.position.x, player.position.y + 30)) {
     player.position.y--;
   }
-
   drawSprites();
 }
 
 function playerAnimState() {
   switch (playerState) {
     case 0:
-    playerTimer = 0;
-    jump = -10;
-    player.changeAnimation('Running');
+      playerTimer = 0;
+      jump = -10;
+      player.changeAnimation('Running');
       break;
 
     case 1:
-    playerTimer++;
-    jump = 0;
-    player.changeAnimation('Jumped');
-    if (playerTimer >= 40) {
-      playerState = 0;
-      playerTimer = 0;
-    }
+      playerTimer++;
+      jump = 0;
+      player.changeAnimation('Jumped');
+      if (playerTimer >= 40) {
+        playerState = 0;
+        playerTimer = 0;
+      }
       break;
-    }
   }
+}
