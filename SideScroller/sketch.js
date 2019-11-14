@@ -29,26 +29,24 @@ function setup() {
   createCanvas(800, 400);
 
   player = createSprite(200,100);
-  var playerAnimControl = player.addAnimation('Idle','assets/Player/Pika1.gif','assets/Player/Pika2.gif');
-  player.addAnimation('Walkinng','assets/Player/Pika1.gif','assets/Player/Pika2.gif','assets/Player/Pika3.gif',
-  'assets/Player/Pika4.gif');
-  player.addAnimation('Running','assets/Player/Pika1.gif','assets/Player/Pika2.gif','assets/Player/Pika3.gif',
-  'assets/Player/Pika4.gif');
-  player.addAnimation('Jumped','assets/Player/Pika3.gif');
-  player.addAnimation('PowerUpRunning','assets/Player/Pika3.gif');
-  player.addAnimation('PowerUpIdle','assets/Player/Pika3.gif');
+  var playerAnimControl = player.addAnimation('Idle');
+  player.addAnimation('Running','assets/Player/Player1.png','assets/Player/Player2.png','assets/Player/Player3.png','assets/Player/Player4.png','assets/Player/Player5.png','assets/Player/Player6.png');
+  player.addAnimation('Jumped','assets/Player/Player3.png');
+  player.addAnimation('PowerUpRunning','assets/Player/Player3.png');
+  player.addAnimation('PowerUpIdle','assets/Player/Player3.png');
   player.debug = true;
 
   //scale and offset sprite
-  player.scale = 0.5;
-  playerAnimControl.offX = -50;
+  player.scale = 0.2;
+  playerAnimControl.offX = 5000000;
+  playerAnimControl.offY = 5000000;
 
   pickUp = createSprite(350, 215);
   var pickUpAnim = pickUp.addAnimation('item','assets/PickUp/pickUp0.gif','assets/PickUp/pickUp1.gif','assets/PickUp/pickUp2.gif',
   'assets/PickUp/pickUp3.gif','assets/PickUp/pickUp4.gif', 'assets/PickUp/pickUp5.gif','assets/PickUp/pickUp6.gif','assets/PickUp/pickUp7.gif',
   'assets/PickUp/pickUp8.gif','assets/PickUp/pickUp9.gif','assets/PickUp/pickUp10.gif');
 
-  pickUp.addAnimation('item_taken','assets/Player/Pika1.gif','assets/Player/Pika2.gif','assets/Player/Pika3.gif','assets/Player/Pika4.gif');
+  pickUp.addAnimation('item_taken','assets/Player/Player1.png','assets/Player/Player2.png','assets/Player/Player3.png');
   pickUp.setCollider('circle', 0, 0, 100);
   pickUp.debug = true;
 
@@ -70,9 +68,9 @@ function draw() {
 
   //.5 zoom is zooming out (50% of the normal size)
   if (mouseIsPressed)
-    camera.zoom = 0.25;
-  else
     camera.zoom = 0.5;
+  else
+    camera.zoom = 1;
 
   //set the camera position to the ghost position
   camera.position.x = player.position.x;
