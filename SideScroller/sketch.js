@@ -22,6 +22,8 @@ var levelArt;
 var snowMan;
 var damageState = 0;
 var damageTimer = 0;
+var startMusic, stageMusic;
+var musicState = 0;
 //virtual camera
 //move the mouse around
 //because the camera is following it
@@ -29,6 +31,17 @@ var frame;
 //the scene is twice the size of the canvas
 var SCENE_W = 1600;
 var SCENE_H = 800;
+
+function preload() {
+  startMusic = loadSound('assets/Sounds/Music/StartMusic.mp3');
+  stageMusic = loadSound('assets/Sounds/Music/StageMusic.mp3');
+
+  startMusic.loop();
+  startMusic.stop();
+  stageMusic.loop();
+  stageMusic.stop();
+
+}
 
 function setup() {
   createCanvas(800, 800);
@@ -42,9 +55,13 @@ function setup() {
 
   player = createSprite(200, 200);
   var playerAnimControl = player.addAnimation('Running', 'assets/Player/Player1.png', 'assets/Player/Player2.png',
-  'assets/Player/Player3.png', 'assets/Player/Player4.png', 'assets/Player/Player5.png', 'assets/Player/Player6.png');
+    'assets/Player/Player3.png', 'assets/Player/Player4.png', 'assets/Player/Player5.png', 'assets/Player/Player6.png');
 
-  player.addAnimation('Jumped', 'assets/Player/Player3.png');
+  player.addAnimation('RunningLeft', 'assets/Player/Player1Left.png', 'assets/Player/Player2Left.png',
+    'assets/Player/Player3Left.png', 'assets/Player/Player4Left.png', 'assets/Player/Player5Left.png', 'assets/Player/Player6Left.png');
+
+  player.addAnimation('rightJumped', 'assets/Player/Player3.png');
+  player.addAnimation('leftJumped', 'assets/Player/Player3Left.png');
   player.setCollider('rectangle', 0, 0, 500, 300);
   player.debug = true;
 
@@ -81,6 +98,7 @@ function setup() {
 }
 
 function draw() {
+  musicPlayer();
 
   switch (gameState) {
     case 0:
@@ -97,21 +115,22 @@ function draw() {
       }
       break;
     case 2:
-    camera.off();
-    image(losePic,0, 0);
-    resetTimer--;
-    health = 3;
-    if (resetTimer < 1) {
-      background('black');
-      camera.on();
-      resetTimer = 100;
-      fill('white');
-      textSize(50);
-      text("Loading...", 400, 400);
-      player.position.x = 300;
-      player.position.y = 100;
-      gameState = 0;
-    }
+      camera.off();
+      image(losePic, 0, 0);
+      resetTimer--;
+      health = 3;
+      if (resetTimer < 1) {
+        musicState = 0;
+        background('black');
+        camera.on();
+        resetTimer = 100;
+        fill('white');
+        textSize(50);
+        text("Loading...", 400, 400);
+        player.position.x = 300;
+        player.position.y = 100;
+        gameState = 0;
+      }
       break;
     case 3:
 
@@ -127,6 +146,7 @@ function draw() {
       if (resetTimer < 1) {
         player.position.x = 300;
         player.position.y = 100;
+        resetGame();
         resetTimer = 100;
         gameState = 1;
       }
@@ -137,9 +157,15 @@ function draw() {
 function splashScreen() {
   camera.off();
   image(splashPic, 0, 0);
+  musicState = 1;
   if (mouseIsPressed) {
+    musicState = 2;
     gameState = 4;
   }
+}
+
+function resetGame() {
+  snowMan.position.x = 500;
 }
 
 
@@ -148,8 +174,8 @@ function game() {
   playerAnimState()
   fill('Red');
   textSize(50);
-  text('Health:'+ health, camera.position.x-350, camera.position.y-300);
-  text('Timer:'+ timer, camera.position.x+100, camera.position.y-300);
+  text('Health:' + health, camera.position.x - 350, camera.position.y - 300);
+  text('Timer:' + timer, camera.position.x + 100, camera.position.y - 300);
 
   //a camera is created automatically at the beginning
   //.5 zoom is zooming out (50% of the normal size)
@@ -162,7 +188,7 @@ function game() {
 
 
 
-  if(player.position.y > 600){
+  if (player.position.y > 600) {
     player.position.x = 200;
     player.position.y = 200;
     health--;
@@ -174,25 +200,44 @@ function game() {
   //jump command
   if (keyWentDown('space') || (keyWentDown(UP_ARROW))) {
     player.velocity.y = jump;
-    playerState = 1;
+    playerState = 2;
   }
 
   //if no arrow input set velocity to 0
   player.velocity.x = 0;
 
-  if (keyIsDown(LEFT_ARROW))
-    player.velocity.x = -5;
-
-  if (keyIsDown(RIGHT_ARROW))
+  //movement
+  if (keyIsDown(RIGHT_ARROW) && playerState <= 1) {
     player.velocity.x = 5;
+    playerState = 0;
+  }
+
+  if (keyIsDown(LEFT_ARROW) && playerState <= 1) {
+    player.velocity.x = -5;
+    playerState = 1;
+
+  }
+
+  //jump movment
+
+  if (keyIsDown(RIGHT_ARROW) && playerState >= 2) {
+    player.velocity.x = 5;
+    playerState = 2;
+  }
+
+  if (keyIsDown(LEFT_ARROW) && playerState >= 2) {
+    player.velocity.x = -5;
+    playerState = 3;
+
+  }
+
 
   // //instead of checking the colliders or bounding box overlaps
   // //I can just check a point against a collider
   // if (pickUp.overlapPoint(player.position.x, player.position.y))
   //   pickUp.changeAnimation('item_taken');
 
-  if(player.overlap(snowMan))
-  {
+  if (player.overlap(snowMan)) {
     playerDamage();
     damageState = 1;
   }
@@ -220,33 +265,78 @@ function playerAnimState() {
       break;
 
     case 1:
+      playerTimer = 0;
+      jump = -10;
+      player.changeAnimation('RunningLeft');
+      break;
+    case 2:
+      player.changeAnimation('rightJumped');
       playerTimer++;
       jump = 0;
-      player.changeAnimation('Jumped');
       if (playerTimer >= 40) {
         playerState = 0;
+        playerTimer = 0;
+      }
+      break;
+    case 3:
+      player.changeAnimation('leftJumped');
+      playerTimer++;
+      jump = 0;
+      if (playerTimer >= 40) {
+        playerState = 1;
         playerTimer = 0;
       }
       break;
   }
 }
 
-function playerDamage(){
+function playerDamage() {
   switch (damageState) {
     case 0:
       //idel state
       break;
     case 1:
-    snowMan.remove();
-    damageTimer++
-    if (damageTimer >= 20) {
-      snowMan.position.x =-1000;
-      damageTimer = 0;
-      health = health -1;
-      damageState = 0;
-    }
+      damageTimer++
+      if (damageTimer >= 20) {
+        snowMan.position.x = -1000;
+        damageTimer = 0;
+        health = health - 1;
+        damageState = 0;
+      }
 
-    break;
+      break;
+
+  }
+}
+
+function musicPlayer() {
+  switch (musicState) {
+
+    case 0: // trigger the playing, and go immediately to the next state
+      startMusic.stop();
+      stageMusic.stop();
+      startMusic.play();
+      musicState = 1; // go immediately (the next time) to the next state
+      break;
+
+
+    case 1:
+      // hang out in here, put some lyrics or pictures or something while the song plays.
+      // put pictures and shapes in here
+
+      break; // we would only leave state 1 with a mouseClick
+
+
+
+    case 2: // trigger the playing, and go immediately to the next state
+      startMusic.stop();
+      stageMusic.stop();
+      stageMusic.play();
+      musicState = 3;
+      break;
+
+    case 3:
+      break;
 
   }
 }
