@@ -11,18 +11,19 @@ var playerState = 0;
 var playerTimer = 0;
 var GRAVITY = .5;
 var gameState = 0;
-var timer = 10;
+var timer = 600;
 var splashPic;
 var backgroundPic;
 var losePic;
 var winPic;
 var resetTimer = 100;
+health = 3;
 //virtual camera
 //move the mouse around
 //because the camera is following it
 var frame;
 //the scene is twice the size of the canvas
-var SCENE_W = 1600;
+var SCENE_W = 3000;
 var SCENE_H = 800;
 
 function setup() {
@@ -35,7 +36,7 @@ function setup() {
 
 
 
-  player = createSprite(200, 320);
+  player = createSprite(200, 200);
   var playerAnimControl = player.addAnimation('Idle');
   player.addAnimation('Running', 'assets/Player/Player1.png', 'assets/Player/Player2.png', 'assets/Player/Player3.png', 'assets/Player/Player4.png', 'assets/Player/Player5.png', 'assets/Player/Player6.png');
   player.addAnimation('Jumped', 'assets/Player/Player3.png');
@@ -93,10 +94,15 @@ function draw() {
     camera.off();
     image(losePic,0, 0);
     resetTimer--;
+    health = 3;
     if (resetTimer < 1) {
       background('black');
       camera.on();
-      resetTimer = 10;
+      resetTimer = 100;
+      fill('white');
+      text("Loading...", 65, 600);
+      player.position.x = 200;
+      player.position.y = 100;
       gameState = 0;
     }
       break;
@@ -106,10 +112,15 @@ function draw() {
     case 4:
       clear;
       background('black');
-      timer--;
-      if (timer < 1) {
+      camera.on();
+      fill('white');
+      text("Loading...", 65, 600);
+      resetTimer--;
+      if (resetTimer < 1) {
+        player.position.x = 200;
+        player.position.y = 100;
+        resetTimer = 100;
         gameState = 1;
-        timer = 100;
       }
       break;
   }
@@ -127,15 +138,29 @@ function splashScreen() {
 function game() {
 
   playerAnimState()
+  fill('Red');
+  textSize(50);
+  text('Health:'+ health, camera.position.x-350, camera.position.y-300);
 
   //a camera is created automatically at the beginning
   //.5 zoom is zooming out (50% of the normal size)
   camera.zoom = 1;
 
-  //set the camera position to the ghost position
+  //set the camera position to the player position
 
   camera.position.x = player.position.x;
   camera.position.y = player.position.y;
+
+
+
+  if(player.position.y > 600){
+    player.position.x = 200;
+    player.position.y = 200;
+    health--;
+  }
+
+
+
 
   //jump command
   if (keyWentDown('space') || (keyWentDown(UP_ARROW))) {
