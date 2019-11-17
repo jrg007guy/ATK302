@@ -4,7 +4,7 @@
 //left and right keys to move the sprite
 //it's position is adjusted to another sprite's opaque pixels
 var player;
-var pickUp;
+var pickUp, pickUp1, pickUp2, pickUp3, pickUp4, pickUp5, pickUp6, pickUp7, pickUp8, pickUp9, pickUp10;
 var platform;
 var jump = -10;
 var playerState = 0;
@@ -71,11 +71,7 @@ function setup() {
   playerAnimControl.offY = -50;
 
   pickUp = createSprite(700, 370);
-  var pickUpAnim = pickUp.addAnimation('item', 'assets/PickUp/pickUp0.gif', 'assets/PickUp/pickUp1.gif', 'assets/PickUp/pickUp2.gif',
-    'assets/PickUp/pickUp3.gif', 'assets/PickUp/pickUp4.gif', 'assets/PickUp/pickUp5.gif', 'assets/PickUp/pickUp6.gif', 'assets/PickUp/pickUp7.gif',
-    'assets/PickUp/pickUp8.gif', 'assets/PickUp/pickUp9.gif', 'assets/PickUp/pickUp10.gif');
-
-  pickUp.addAnimation('item_taken', 'assets/Player/Player1.png', 'assets/Player/Player2.png', 'assets/Player/Player3.png');
+  var pickUpAnim = pickUp.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp.setCollider('circle', 0, 0, 100);
   pickUp.debug = true;
 
