@@ -16,7 +16,7 @@ var splashPic;
 var backgroundPic;
 var losePic;
 var winPic;
-var resetTimer = 100;
+var resetTimer = 50;
 var health = 3;
 var levelArt;
 var snowMan;
@@ -24,6 +24,9 @@ var damageState = 0;
 var damageTimer = 0;
 var startMusic, stageMusic;
 var musicState = 0;
+var snowManState = 0;
+var snowManTimer = 0;
+var snowManX = 0;
 //virtual camera
 //move the mouse around
 //because the camera is following it
@@ -70,15 +73,16 @@ function setup() {
   playerAnimControl.offX = -100;
   playerAnimControl.offY = -50;
 
-  pickUp = createSprite(700, 370);
+  pickUp = createSprite(2000, 370);
   var pickUpAnim = pickUp.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp.setCollider('circle', 0, 0, 100);
   pickUp.debug = true;
 
   pickUp.scale = 0.3;
 
-  snowMan = createSprite(500, 315);
-  var snowManAnim = snowMan.addAnimation('idle', 'assets/Evil_snowman.png');
+  snowMan = createSprite(1000, 320);
+  var snowManAnim = snowMan.addAnimation('leftMove', 'assets/Evil_snowmanLeft.png');
+  snowMan.addAnimation('rightMove', 'assets/Evil_snowmanRight.png');
 
   snowMan.setCollider('rectangle', 0, 0, 400, 700);
   snowMan.debug = true;
@@ -106,6 +110,7 @@ function draw() {
       game();
       timer--;
       if (timer < 1 || health <= 0) {
+        resetTimer = 100;
         timer = 600;
         gameState = 2;
       }
@@ -115,21 +120,18 @@ function draw() {
       image(losePic, 0, 0);
       resetTimer--;
       health = 3;
-      if (resetTimer < 1) {
-        musicState = 0;
-        background('black');
-        camera.on();
-        resetTimer = 100;
-        fill('white');
-        textSize(50);
-        text("Loading...", 400, 400);
-        player.position.x = 300;
-        player.position.y = 100;
-        gameState = 0;
+      if (resetTimer < -100) {
+        resetGame();
       }
       break;
     case 3:
-
+      camera.off();
+      image(winPic, 0, 0);
+      resetTimer--;
+      health = 3;
+      if (resetTimer < -100) {
+        resetGame();
+      }
       break;
     case 4:
       clear;
@@ -138,13 +140,14 @@ function draw() {
       fill('white');
       textSize(50);
       text("Loading...", 400, 400);
+      snowManState = 1;
       resetTimer--;
       if (resetTimer < 1) {
         player.position.x = 300;
         player.position.y = 100;
-        resetGame();
-        resetTimer = 100;
+        player.velocity.y = 0;
         gameState = 1;
+        resetTimer = 50;
       }
       break;
   }
@@ -161,13 +164,28 @@ function splashScreen() {
 }
 
 function resetGame() {
-  snowMan.position.x = 500;
+  snowManState = 1;
+  snowManTimer = 0;
+  snowMan.position.x = 1000;
+  snowMan.position.y = 320;
+  snowMan.changeAnimation('rightMove');
+
+  playerState = 0;
+  pickUp.position.x = 2000;
+  musicState = 0;
+  background('black');
+  camera.on();
+  resetTimer = 100;
+  timer = 600;
+  gameState = 0;
+  health = 3;
 }
 
 
 function game() {
-
-  playerAnimState()
+  playerDamage();
+  playerAnimState();
+  snowManAnimState();
   fill('Red');
   textSize(50);
   text('Health:' + health, camera.position.x - 350, camera.position.y - 300);
@@ -184,9 +202,10 @@ function game() {
 
 
 
-  if (player.position.y > 600) {
+  if (player.position.y > 900) {
     player.position.x = 200;
     player.position.y = 200;
+    player.velocity.y = 0;
     health--;
   }
 
@@ -234,8 +253,13 @@ function game() {
   //   pickUp.changeAnimation('item_taken');
 
   if (player.overlap(snowMan)) {
-    playerDamage();
+
     damageState = 1;
+  }
+
+  if (player.overlap(pickUp)) {
+    pickUp.position.x = -1000;
+    gameState = 3;
   }
 
   //Or check a point against the pixels of a sprite animation or image
@@ -294,7 +318,7 @@ function playerDamage() {
     case 1:
       damageTimer++
       if (damageTimer >= 20) {
-        snowMan.position.x = -1000;
+        snowManState = 3;
         damageTimer = 0;
         health = health - 1;
         damageState = 0;
@@ -334,5 +358,42 @@ function musicPlayer() {
     case 3:
       break;
 
+  }
+}
+
+function snowManAnimState() {
+  switch (snowManState) {
+    case 0:
+      //Defult reset snowman position
+      snowManTimer = 0;
+      snowMan.position.x = 1000;
+      snowMan.position.y = 320;
+      snowMan.changeAnimation('rightMove');
+      break;
+
+    case 1:
+      //Move snowman Right
+      snowMan.position.x++;
+      snowMan.changeAnimation('rightMove');
+      snowManTimer++;
+      if (snowManTimer >= 100) {
+        snowManState = 2;
+        snowManTimer = 0;
+      }
+      break;
+    case 2:
+      //Move snowman Left
+      snowMan.position.x--;
+      snowMan.changeAnimation('leftMove');
+      snowManTimer++;
+      if (snowManTimer >= 100) {
+        snowManState = 1;
+        snowManTimer = 0;
+      }
+      break;
+    case 3:
+      snowMan.position.y = -1000;
+      snowManTimer = 0;
+      break;
   }
 }
