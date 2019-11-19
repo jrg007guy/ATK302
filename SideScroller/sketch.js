@@ -4,14 +4,14 @@
 //left and right keys to move the sprite
 //it's position is adjusted to another sprite's opaque pixels
 var player;
-var pickUp, pickUp1, pickUp2, pickUp3, pickUp4, pickUp5, pickUp6, pickUp7, pickUp8, pickUp9, pickUp10;
+var pickUp, pickUp1, pickUp2, pickUp3, pickUp4;
 var platform;
 var jump = -10;
 var playerState = 0;
 var playerTimer = 0;
 var GRAVITY = .5;
 var gameState = 0;
-var timer = 600;
+var timer = 1200;
 var splashPic;
 var backgroundPic;
 var losePic;
@@ -27,6 +27,13 @@ var musicState = 0;
 var snowManState = 0;
 var snowManTimer = 0;
 var snowManX = 0;
+var amountCollected = 0;
+var collectionState = 0;
+var collectionTimer = 0;
+
+var Snow;
+var Snow2;
+var Snow3;
 //virtual camera
 //move the mouse around
 //because the camera is following it
@@ -80,6 +87,38 @@ function setup() {
 
   pickUp.scale = 0.3;
 
+
+  pickUp1 = createSprite(1700, 370);
+  var pickUp1Anim = pickUp1.addAnimation('item', 'assets/PickUp/Ornament_.png');
+  pickUp1.setCollider('circle', 0, 0, 100);
+  pickUp1.debug = true;
+
+  pickUp1.scale = 0.3;
+
+
+  pickUp2 = createSprite(1400, 370);
+  var pickUp2Anim = pickUp2.addAnimation('item', 'assets/PickUp/Ornament_.png');
+  pickUp2.setCollider('circle', 0, 0, 100);
+  pickUp2.debug = true;
+
+  pickUp2.scale = 0.3;
+
+
+  pickUp3 = createSprite(1100, 370);
+  var pickUp3Anim = pickUp3.addAnimation('item', 'assets/PickUp/Ornament_.png');
+  pickUp3.setCollider('circle', 0, 0, 100);
+  pickUp3.debug = true;
+
+  pickUp3.scale = 0.3;
+
+
+  pickUp4 = createSprite(900, 370);
+  var pickUp4Anim = pickUp4.addAnimation('item', 'assets/PickUp/Ornament_.png');
+  pickUp4.setCollider('circle', 0, 0, 100);
+  pickUp4.debug = true;
+
+  pickUp4.scale = 0.3;
+
   snowMan = createSprite(1000, 320);
   var snowManAnim = snowMan.addAnimation('leftMove', 'assets/Evil_snowmanLeft.png');
   snowMan.addAnimation('rightMove', 'assets/Evil_snowmanRight.png');
@@ -95,6 +134,49 @@ function setup() {
   platform.addImage(loadImage('assets/LevelArt.png'));
 
   player.depth = 10;
+
+//Snow particles
+  var t =
+  {
+      name: "test",
+      colors: ["white"],
+      lifetime: 700,
+      angle: [0,180],
+      size: [5,10],
+      speedx: 20,
+      limit: 7000,
+      x: 0,
+      y: -1
+  };
+  Snow = new Fountain(null, t);
+
+  var ti =
+  {
+      name: "test2",
+      colors: ["white"],
+      lifetime: 700,
+      angle: [0,180],
+      size: [5,10],
+      speedx: 20,
+      limit: 7000,
+      x: 1,
+      y: -1
+  };
+  Snow2 = new Fountain(null, ti);
+
+  var tim =
+  {
+      name: "test3",
+      colors: ["white"],
+      lifetime: 700,
+      angle: [0,180],
+      size: [5,10],
+      speedx: 20,
+      limit: 7000,
+      x: 2,
+      y: -1
+  };
+  Snow3 = new Fountain(null, tim);
 }
 
 function draw() {
@@ -170,15 +252,22 @@ function resetGame() {
   snowMan.position.y = 320;
   snowMan.changeAnimation('rightMove');
 
-  playerState = 0;
+
   pickUp.position.x = 2000;
-  musicState = 0;
+  pickUp1.position.x = 1700;
+  pickUp2.position.x = 1400;
+  pickUp3.position.x = 1100;
+  pickUp4.position.x = 900;
   background('black');
   camera.on();
   resetTimer = 100;
-  timer = 600;
-  gameState = 0;
+  timer = 1200;
   health = 3;
+  amountCollected = 0;
+  playerState = 0;
+  musicState = 0;
+  gameState = 0;
+
 }
 
 
@@ -186,10 +275,16 @@ function game() {
   playerDamage();
   playerAnimState();
   snowManAnimState();
+  collection();
+  snowfall();
+
   fill('Red');
   textSize(50);
   text('Health:' + health, camera.position.x - 350, camera.position.y - 300);
+  fill('white');
   text('Timer:' + timer, camera.position.x + 100, camera.position.y - 300);
+  fill('orange');
+  text('Ornaments:' + amountCollected + '/5', camera.position.x - 350, camera.position.y - 250);
 
   //a camera is created automatically at the beginning
   //.5 zoom is zooming out (50% of the normal size)
@@ -257,8 +352,31 @@ function game() {
     damageState = 1;
   }
 
+  //PICKUPS
   if (player.overlap(pickUp)) {
     pickUp.position.x = -1000;
+    collectionState = 1;
+  }
+  if (player.overlap(pickUp1)) {
+    pickUp1.position.x = -1000;
+    collectionState = 1;
+  }
+  if (player.overlap(pickUp2)) {
+    pickUp2.position.x = -1000;
+    collectionState = 1;
+  }
+  if (player.overlap(pickUp3)) {
+    pickUp3.position.x = -1000;
+    collectionState = 1;
+  }
+  if (player.overlap(pickUp4)) {
+    pickUp4.position.x = -1000;
+    collectionState = 1;
+  }
+
+
+
+  if (amountCollected == 5) {
     gameState = 3;
   }
 
@@ -396,4 +514,35 @@ function snowManAnimState() {
       snowManTimer = 0;
       break;
   }
+}
+
+function collection(){
+  switch (collectionState) {
+    case 0:
+      //idel state
+      break;
+    case 1:
+      collectionTimer++
+      if (collectionTimer >= 10) {
+        amountCollected++;
+        collectionState = 0;
+      }
+
+      break;
+
+  }
+}
+
+function snowfall() {
+Snow.Draw();
+Snow.Create();
+Snow.Step();
+
+Snow2.Draw();
+Snow2.Create();
+Snow2.Step();
+
+Snow3.Draw();
+Snow3.Create();
+Snow3.Step();
 }
