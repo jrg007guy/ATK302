@@ -6,7 +6,7 @@
 var player;
 var pickUp, pickUp1, pickUp2, pickUp3, pickUp4;
 var platform;
-var jump = -10;
+var jump = 0;
 var playerState = 0;
 var playerTimer = 0;
 var GRAVITY = .5;
@@ -121,14 +121,15 @@ function setup() {
 
   snowMan = createSprite(1000, 320);
   var snowManAnim = snowMan.addAnimation('leftMove', 'assets/Evil_snowmanLeft.png');
-  snowMan.addAnimation('rightMove', 'assets/Evil_snowmanRight.png');
+  var snowManAnim2 = snowMan.addAnimation('rightMove', 'assets/Evil_snowmanRight.png');
 
-  snowMan.setCollider('rectangle', 0, 0, 400, 700);
+  snowMan.setCollider('rectangle', 0, 50, 400, 700);
   snowMan.debug = true;
 
-  snowMan.scale = 0.2;
+  snowMan.scale = 0.17;
   snowManAnim.offX = 0;
-  snowManAnim.offY = 0;
+  snowManAnim.offY = 200;
+  snowManAnim2.offY = 200;
 
   platform = createSprite(1600, 400);
   platform.addImage(loadImage('assets/LevelArt.png'));
@@ -398,13 +399,13 @@ function playerAnimState() {
   switch (playerState) {
     case 0:
       playerTimer = 0;
-      jump = -10;
+      jump = -15;
       player.changeAnimation('Running');
       break;
 
     case 1:
       playerTimer = 0;
-      jump = -10;
+      jump = -15;
       player.changeAnimation('RunningLeft');
       break;
     case 2:
