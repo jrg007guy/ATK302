@@ -73,7 +73,7 @@ function setup() {
   player.addAnimation('rightJumped', 'assets/Player/Player3.png');
   player.addAnimation('leftJumped', 'assets/Player/Player3Left.png');
   player.setCollider('rectangle', 0, 0, 500, 300);
-  player.debug = true;
+  player.debug = false;
 
   //scale and offset sprite
   player.scale = 0.2;
@@ -83,7 +83,7 @@ function setup() {
   pickUp = createSprite(2000, 370);
   var pickUpAnim = pickUp.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp.setCollider('circle', 0, 0, 100);
-  pickUp.debug = true;
+  pickUp.debug = false;
 
   pickUp.scale = 0.3;
 
@@ -91,7 +91,7 @@ function setup() {
   pickUp1 = createSprite(1700, 370);
   var pickUp1Anim = pickUp1.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp1.setCollider('circle', 0, 0, 100);
-  pickUp1.debug = true;
+  pickUp1.debug = false;
 
   pickUp1.scale = 0.3;
 
@@ -99,7 +99,7 @@ function setup() {
   pickUp2 = createSprite(1400, 370);
   var pickUp2Anim = pickUp2.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp2.setCollider('circle', 0, 0, 100);
-  pickUp2.debug = true;
+  pickUp2.debug = false;
 
   pickUp2.scale = 0.3;
 
@@ -107,7 +107,7 @@ function setup() {
   pickUp3 = createSprite(1100, 370);
   var pickUp3Anim = pickUp3.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp3.setCollider('circle', 0, 0, 100);
-  pickUp3.debug = true;
+  pickUp3.debug = false;
 
   pickUp3.scale = 0.3;
 
@@ -115,7 +115,7 @@ function setup() {
   pickUp4 = createSprite(900, 370);
   var pickUp4Anim = pickUp4.addAnimation('item', 'assets/PickUp/Ornament_.png');
   pickUp4.setCollider('circle', 0, 0, 100);
-  pickUp4.debug = true;
+  pickUp4.debug = false;
 
   pickUp4.scale = 0.3;
 
@@ -124,7 +124,7 @@ function setup() {
   var snowManAnim2 = snowMan.addAnimation('rightMove', 'assets/Evil_snowmanRight.png');
 
   snowMan.setCollider('rectangle', 0, 50, 400, 700);
-  snowMan.debug = true;
+  snowMan.debug = false;
 
   snowMan.scale = 0.17;
   snowManAnim.offX = 0;
